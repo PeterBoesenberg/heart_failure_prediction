@@ -7,13 +7,13 @@ source("R/load.R")
 h2o.init(nthreads = 4)
 
 #load our data
-data <- load()
+data <- fread("input/heart_failure_clinical_records_dataset.csv")
 
 # make sure we are predicting binomial
 data$DEATH_EVENT <- as.factor(data$DEATH_EVENT)
 
 # make train test split
-smp_size <- floor(0.75 * nrow(data))
+smp_size <- floor(0.9 * nrow(data))
 # set.seed(123)
 train_index <- sample(seq_len(nrow(data)), size = smp_size)
 
@@ -28,7 +28,7 @@ x <- setdiff(names(train), y)
 aml <- h2o.automl(x = x, y = y,
                   training_frame = train,
                   max_models = 20,
-                  max_runtime_secs = 600,
+                  max_runtime_secs = 10,
                   seed = 1)
 
 # pick best performing model and predict 
